@@ -5,6 +5,7 @@
 #include <time.h>
 #include <iomanip>      // std::setprecision
 
+
 using namespace std;
 
 int main(){
@@ -17,7 +18,8 @@ int main(){
 	char processor_name[MPI_MAX_PROCESSOR_NAME];
 	int name_len;
 	MPI_Get_processor_name(processor_name,&name_len);
+
 	cout << "Processor "<<processor_name<<" rank "<<rank << 
-	 		" out of "<<world_size<<" processors"<<endl;
+	 		" out of "<<world_size<<" processors"<<endl<<flush;
 	return 1;
 }
