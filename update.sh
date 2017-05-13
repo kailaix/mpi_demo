@@ -1,3 +1,4 @@
+#! /bin/sh 
 ssh slave1 << END
 if ! [[ -d mpi_demo ]]; then 
 	git clone https://github.com/kailaix/mpi_demo.git
