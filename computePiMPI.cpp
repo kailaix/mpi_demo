@@ -24,7 +24,7 @@ int main(){
 		t = clock();
 	}
 
-	int start = rank *100000000, end = (1+rank)*100000000;
+	int start = rank *(100000000/2), end = (1+rank)*(100000000/2);
 	double sum = 0.0;
 	for(int i=start; i< end;i++)
 		sum += 1.0/(2.0*i+1.0) * (i%2==0?1:-1);
