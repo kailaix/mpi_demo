@@ -6,11 +6,15 @@
 using namespace std;
 
 int main(){
-	clock_t t = clock();
+	
 	MPI_Init(NULL,NULL);
 	int world_size, rank;
 	MPI_Comm_size(MPI_COMM_WORLD,&world_size);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	clock_t t;
+	if(rank==0){
+		t = clock();
+	}
 
 	int start = rank *100000000, end = (1+rank)*100000000;
 	double sum = 0.0;
@@ -30,9 +34,12 @@ int main(){
 		MPI_Send(&sum, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
 		}
 	
-	double pi = 4*sum;
+	
 
-	cout << "PI is " <<setprecision(15) << pi << endl;
-	cout << "Time taken: "<<  clock() - t <<  endl;
+	if(rank==0){
+		double pi = 4*sum;
+		cout << "PI is " <<setprecision(15) << pi << endl;
+		cout << "Time taken: "<<  clock() - t <<  endl;
+	}
 	return 1;
 }
