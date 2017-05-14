@@ -24,35 +24,32 @@ int main(){
 
 	float norm;
 	int * A;
-	// printf("Allocate b\n");
 	int * b = new int[SIZE*6] ;
-	// printf("Allocate PA\n");
 	int * PA = new int[SIZE*SIZE*6];
 
 
-	// MPI_Barrier(MPI_COMM_WORLD);
-	t = clock();
+	
 
 	srand(123);
 	if(rank==0){
-		// printf("Allocate A\n");
+		// to save space and time, we only allocate space for rank==0
 		A = new int[SIZE*SIZE*6*6];
 		for(unsigned int i=0;i<SIZE*SIZE*6*6;i++)
 			A[i] = rand()%100;
 		for(unsigned int i=0;i<6*SIZE;i++)
 			b[i] = rand()%100;
-		delete [] A;
 	}
+
+	// it is very important to put MPI_Scatter and MPI_Bcast outside of rank==0
+	// so that every one can see.
 
 	MPI_Scatter(A,SIZE*SIZE*6,MPI_INT,PA,SIZE*SIZE*6,MPI_INT,
 			0, MPI_COMM_WORLD);
 	MPI_Bcast(b,SIZE*6,MPI_INT,0,MPI_COMM_WORLD);
 
-	// printf("broadcast completed for rank %d\n",rank);
-
 	MPI_Barrier(MPI_COMM_WORLD);
+	t = MPI_Wtime();
 
-	// printf("after Barrier rank %d\n",rank);
 
 	double sum = 0.0;
 	double rowsum;
@@ -65,10 +62,8 @@ int main(){
 		sum += rowsum*rowsum;
 	}
 
-	// printf("compute completed for rank %d\n",rank);
 
 	if (rank!=0){
-		// printf("rank %d, sum=%1.15f\n",rank, sum);
 		MPI_Send(&sum,1,MPI_DOUBLE,0,0,MPI_COMM_WORLD);
 	}
 	
@@ -78,15 +73,16 @@ int main(){
 			MPI_Recv(&temp, 1, MPI_DOUBLE, i,0,MPI_COMM_WORLD,
 				MPI_STATUS_IGNORE);
 			sum += temp;
-			// printf("temp=%1.15f\n",temp);
 		}		
 		sum = pow(sum,0.5);
-		printf("NORM=%1.15f,TIME=%d\n",sum,(int)(clock()-t));
+		printf("NORM=%1.15f,TIME=%0.8f\n",sum,MPI_Wtime()-t);
 }
 	
+	delete [] A;
 	delete [] PA;
 	delete [] b;
 
 	MPI_Finalize();
 	return 1;
 	}
+
