@@ -4,7 +4,7 @@
 #include <iomanip>      // std::setprecision
 #include <stdlib.h>     /* srand, rand */
 #include <cmath>
-#define SIZE 50u
+#define SIZE 10
 using namespace std;
 
 // 6 processors
