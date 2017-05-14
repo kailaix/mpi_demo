@@ -78,7 +78,8 @@ int main(){
 		printf("NORM=%1.15f,TIME=%0.8f\n",sum,MPI_Wtime()-t);
 }
 	
-	delete [] A;
+	if(rank==0)
+		delete [] A;
 	delete [] PA;
 	delete [] b;
 
